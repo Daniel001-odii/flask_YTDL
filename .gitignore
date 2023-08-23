@@ -1,0 +1,27 @@
+# Virtual environment
+venv/
+
+# Compiled Python files
+__pycache__/
+
+# Logs and temp files
+*.log
+*.pot
+*.pyc
+*.pyo
+*.swp
+*~
+
+# Environment variables
+.env
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Dependency directories
+flask/lib/
+flask/lib64/
+
+Lib
+Scripts
