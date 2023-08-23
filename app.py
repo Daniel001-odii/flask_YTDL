@@ -1,9 +1,11 @@
-from flask import Flask, render_template, request, send_file, make_response
+from flask import Flask, render_template, request, send_file, make_response, jsonify  
 from pytube import YouTube
 from urllib.parse import urlencode
+from flask_cors import CORS 
 
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/", methods=["GET", "POST"])
 def home():
@@ -59,7 +61,8 @@ def api_video_info():
             yt = YouTube(url)
             video_streams = yt.streams.filter(file_extension="mp4", progressive=True)
             thumbnail_url = yt.thumbnail_url
-            resolutions = [{"resolution": stream.resolution, "size": stream.filesize} for stream in video_streams]
+            resolutions = [{"resolution": stream.resolution, "size_mb": stream.filesize / (1024 * 1024), "download_link": f"/api/download?url={url}&resolution={stream.resolution}"} for stream in video_streams]
+            # resolutions = [{"resolution": stream.resolution, "size": stream.filesize, "download_link": f"/api/download?url={url}&resolution={stream.resolution}"} for stream in video_streams]
             return jsonify({"title": yt.title, "resolutions": resolutions, "thumbnail_url": thumbnail_url})
         except Exception as e:
             return jsonify({"error": "An error occurred: " + str(e)})
@@ -90,7 +93,6 @@ def api_download():
 
     except Exception as e:
         return jsonify({"error": "An error occurred while downloading: " + str(e)})
-
 
 
 if __name__ == "__main__":
